@@ -1,10 +1,45 @@
+
 package Backend;
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.ArrayList;
+
 
 public class BioPelletPlantLocator extends JFrame {
+    
+    // Connection details
+private static final String DB_URL = "jdbc:mysql://localhost:3306/BioPelletLocatorDB";
+private static final String DB_USER = "root"; // change if you use a different username
+private static final String DB_PASS = "HTITN213x01!"; // replace with your MySQL password
+
+// Method to connect to the database
+private Connection connectToDatabase() {
+    Connection connection = null;
+    try {
+        // Establish the connection
+        connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+        System.out.println("Connection to database established successfully!");
+    } catch (SQLException e) {
+        e.printStackTrace(); // Print any SQL exceptions
+    }
+    return connection; // Return the connection object
+}
+private static boolean checkDatabaseConnection() {
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS)) {
+        if (connection != null) {
+            System.out.println("Connected to the database!");
+            return true;
+        }
+    } catch (SQLException e) {
+        System.out.println("Failed to connect to the database.");
+        e.printStackTrace();
+    }
+    return false;}
+
     private ArrayList<BioPelletPlant> plants;
     private JTable table;
     private JTextField searchField;
@@ -125,6 +160,9 @@ public class BioPelletPlantLocator extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(BioPelletPlantLocator::new);
+        BioPelletPlantLocator locator = new BioPelletPlantLocator();
+        Connection connection = locator.connectToDatabase(); // Connect to the database
+        // Use the connection for database operations...
     }
 
     class BioPelletPlant {
